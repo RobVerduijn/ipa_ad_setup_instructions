@@ -1,0 +1,112 @@
+---
+- name: wait for the systems to be available
+  hosts: all
+  become: false
+  gather_facts: false
+
+  tasks:
+  - name: wait for system to become available
+    wait_for_connection:
+      timeout: 3600
+
+- name: setup ipa server
+  hosts: ipa01.linux.lab
+  become: false
+  gather_facts: true
+
+  tasks:
+  - name: update centos
+    package:
+      name: "*"
+      state: latest
+
+  - name: install yum-utils
+    package:
+      name: yum-utils
+      state: present
+
+  - name: check for reboot
+    command: needs-restarting -r
+    changed_when: false
+    failed_when: needsrestarting['rc'] > 1
+    register: needsrestarting
+
+  - name: reboot when needed
+    reboot:
+    when: needsrestarting['rc'] == 1
+
+  - name: enable idm module
+    command: dnf module enable idm:DL1 -y
+    args:
+      warn: false
+
+  - name: configure ipa server
+    include_role:
+      name: ipaserver
+
+  - name: ensure the dnsforwardzone has an entry for the ms-ad-dns
+    ipadnsforwardzone:
+      ipaadmin_principal: "{{ ipaadmin_principal }}"
+      ipaadmin_password: "{{ ipaadmin_password }}"
+      state: present
+      name: "{{ ad_domain }}"
+      forwarders: "{{ ad_dns_servers }}"
+      forwardpolicy: first
+      skip_overlap_check: true
+
+  # the next task should do nothing since it is already taken care of by the ipaserver role
+  # but this is vital because ms-ad does not use dns-sec by module_default
+  # and you can't configure a trust if dns doesn't work
+  # so just in case you didn't use my config for setting up the ipaserver
+  - name: ensure dnsseq validation is off
+    lineinfile:
+      path: /etc/named.conf
+      backrefs: true
+      regexp: "(^.*dnssec-validation) yes(;.*$)"
+      line: \1 no;
+    notify: restart named-pkcs11
+
+  handlers:
+  - name: restart named-pkcs11
+    service:
+      name: named-pkcs11
+      state: restarted
+
+- name: update windows and configure ad domain
+  hosts: ad01.windows.lab
+  become: false
+  gather_facts: true
+
+  tasks:
+  - name: call update windows ( this will take a very long time )
+    include_role:
+      name: update_windows
+
+  - name: call common window configuration
+    include_role:
+      name: windows_common_configuration
+
+  - name: call windows_domain_configuration
+    include_role:
+      name: windows_domain_configuration
+
+  - name: add SRV record _kerberos._tcp.{{ ad_domain }} to ad dns
+    win_shell: >-
+      if ( -not ( Resolve-DnsName -Name _kerberos._udp.dc._msdcs.{{ ad_domain }} -Type SRV )) {
+      Add-DnsServerResourceRecord -Srv -Name "_kerberos._udp.dc" -ZoneName "_msdcs.{{ ad_domain }}"
+      -DomainName "{{ inventory_hostname }}" -Priority 0 -Weight 100 -Port 88
+      }
+
+  - name: set masterservers var
+    set_fact:
+      masterservers: "{{ hostvars[groups['ipaserver'][0]]['ansible_default_ipv4']['address'] }}"
+
+  - name: add conditional forwarder to ad dns
+    win_shell: >-
+      if ( -not ( Resolve-DnsName -Name {{ groups['ipaserver'][0] }} -Type SRV )) {
+      Add-DnsServerConditionalForwarderZone -MasterServers {{ masterservers }} -Name {{ ipaserver_domain }}
+      }
+
+  - name: done message
+    debug:
+      msg: "done, you can now test the ad-trust module"

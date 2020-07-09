@@ -1,0 +1,8 @@
+---
+ansible_connection: winrm
+ansible_winrm_transport: ntlm
+ansible_winrm_server_cert_validation: ignore
+
+ansible_user: Administrator
+ansible_password: RedHat82
+ad_safe_mode_passwd: RedHat82

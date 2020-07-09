@@ -1,0 +1,15 @@
+---
+ansible_user: root
+ansible_password: redhat
+
+ipadm_password: redhat82
+ipaadmin_password: redhat82
+ipaadmin_principal: admin
+
+ipaserver_auto_forwarders: true
+ipaserver_setup_adtrust: true
+ipaserver_setup_dns: true
+ipaserver_setup_kra: true
+ipaserver_no_dnssec_validation: true
+ipaclient_mkhomedir: true
+ipaclient_no_ntp: true

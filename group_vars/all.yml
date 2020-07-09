@@ -1,0 +1,6 @@
+---
+ipaserver_domain: linux.lab
+ipaserver_realm: "{{ ipaserver_domain | upper }}"
+ad_domain: windows.lab
+ad_dns_servers:
+  - 192.168.122.99

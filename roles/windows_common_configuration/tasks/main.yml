@@ -1,0 +1,25 @@
+---
+- name: Change the hostname to {{ inventory_hostname.split(".")[0] }}
+  win_hostname:
+    name: '{{ inventory_hostname.split(".")[0] }}'
+  register: set_hostname
+
+- name: Reboot hostname change
+  win_reboot:
+    msg: "Server hostname change; rebooting..."
+  when: set_hostname.reboot_required
+
+# I really don't like this one
+- name: disable server manager
+  win_shell:  Get-ScheduledTask -TaskName ServerManager | Disable-ScheduledTask -Verbose
+
+- name: Ensure user Administrator account does not expire
+  win_user:
+    name: Administrator
+    password_never_expires: true
+
+- name: Enable Audio Service (because audio is ofcourse critical to the functioning of a server)
+  win_service:
+    name: Audiosrv
+    state: started
+    start_mode: auto

@@ -1,0 +1,97 @@
+<domain type='kvm'>
+  <name>ipa01.linux.lab</name>
+  <metadata>
+    <libosinfo:libosinfo xmlns:libosinfo="http://libosinfo.org/xmlns/libvirt/domain/1.0">
+      <libosinfo:os id="http://centos.org/centos/8"/>
+    </libosinfo:libosinfo>
+  </metadata>
+    <memory unit="KiB">4194304</memory>
+  <currentMemory unit="KiB">4194304</currentMemory>
+  <vcpu placement="static">2</vcpu>
+  <os>
+    <type arch='x86_64'>hvm</type>
+  </os>
+  <features>
+    <acpi/>
+    <apic/>
+    <vmport state='off'/>
+  </features>
+  <cpu mode='host-model' check='partial'>
+    <model fallback='allow'/>
+  </cpu>
+  <clock offset='utc'>
+    <timer name='rtc' tickpolicy='catchup'/>
+    <timer name='pit' tickpolicy='delay'/>
+    <timer name='hpet' present='no'/>
+  </clock>
+  <on_poweroff>destroy</on_poweroff>
+  <on_reboot>restart</on_reboot>
+  <on_crash>destroy</on_crash>
+  <pm>
+    <suspend-to-mem enabled='no'/>
+    <suspend-to-disk enabled='no'/>
+  </pm>
+  <devices>
+    <disk type="file" device="disk">
+      <driver name="qemu" type="qcow2" discard="unmap"/>
+      <source file="/var/lib/libvirt/images/ipa01_linux_lab_sda.qcow2"/>
+      <target dev="sda" bus="scsi"/>
+      <boot order="1"/>
+    </disk>
+    <disk type="file" device="cdrom">
+      <driver name="qemu"/>
+      <source file="/var/lib/libvirt/images/CentOS-8.2.2004-x86_64-dvd1.iso"/>
+      <target dev="sdb" bus="sata"/>
+      <boot order="2"/>
+      <readonly/>
+    </disk>
+      <disk type="file" device="cdrom">
+      <driver name="qemu"/>
+      <source file="/var/lib/libvirt/images/centos-ks.iso"/>
+      <target dev="sdc" bus="sata"/>
+      <readonly/>
+    </disk>
+    <controller type='scsi' index='0' model='virtio-scsi'/>
+    <interface type="network">
+      <source network="default"/>
+      <model type="virtio"/>
+    </interface>
+    <serial type='pty'>
+      <target type='isa-serial' port='0'>
+        <model name='isa-serial'/>
+      </target>
+    </serial>
+    <console type='pty'>
+      <target type='serial' port='0'/>
+    </console>
+    <channel type='unix'>
+      <target type='virtio' name='org.qemu.guest_agent.0'/>
+    </channel>
+    <channel type='spicevmc'>
+      <target type='virtio' name='com.redhat.spice.0'/>
+    </channel>
+    <input type='tablet' bus='usb'>
+    </input>
+    <graphics type='spice' autoport='yes' listen='0.0.0.0'>
+      <listen type='address' address='0.0.0.0'/>
+      <image compression='glz'/>
+      <jpeg compression='always'/>
+      <zlib compression='always'/>
+      <streaming mode='all'/>
+      <playback compression='on'/>
+      <filetransfer enable='yes'/>
+      <clipboard copypaste='yes'/>
+      <mouse mode='client'/>
+    </graphics>
+    <sound model='ich9'>
+    </sound>
+    <video>
+      <model type='qxl' ram='65536' vram='65536' vgamem='16384' heads='1' primary='yes'/>
+    </video>
+    <redirdev bus='usb' type='spicevmc'/>
+    <redirdev bus='usb' type='spicevmc'/>
+    <rng model='virtio'>
+      <backend model='random'>/dev/urandom</backend>
+    </rng> -->
+  </devices>
+</domain>

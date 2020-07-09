@@ -1,0 +1,19 @@
+---
+- name: clean known hosts
+  hosts: localhost
+  remote_user: root
+  gather_facts: false
+  vars:
+    known_hosts_lines:
+    - '192.168.122'
+  # simply add hostname or ip that you wish to delete from known hosts
+  # if you create enough test systems you will understand this small play
+
+  tasks:
+  - name: clean known hosts
+    lineinfile:
+        path: ~/.ssh/known_hosts
+        state: absent
+        regexp: "^{{ item }}.*"
+
+    loop: "{{ known_hosts_lines }}"
