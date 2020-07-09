@@ -90,12 +90,12 @@
     include_role:
       name: windows_domain_configuration
 
-  - name: add SRV record _kerberos._tcp.{{ ad_domain }} to ad dns
-    win_shell: >-
-      if ( -not ( Resolve-DnsName -Name _kerberos._udp.dc._msdcs.{{ ad_domain }} -Type SRV )) {
-      Add-DnsServerResourceRecord -Srv -Name "_kerberos._udp.dc" -ZoneName "_msdcs.{{ ad_domain }}"
-      -DomainName "{{ inventory_hostname }}" -Priority 0 -Weight 100 -Port 88
-      }
+  #- name: add SRV record _kerberos._udp.{{ ad_domain }} to ad dns
+  #  win_shell: >-
+  #    if ( -not ( Resolve-DnsName -Name _kerberos._udp.dc._msdcs.{{ ad_domain }} -Type SRV )) {
+  #    Add-DnsServerResourceRecord -Srv -Name "_kerberos._udp.dc" -ZoneName "_msdcs.{{ ad_domain }}"
+  #    -DomainName "{{ inventory_hostname }}" -Priority 0 -Weight 100 -Port 88
+  #    }
 
   - name: set masterservers var
     set_fact:
