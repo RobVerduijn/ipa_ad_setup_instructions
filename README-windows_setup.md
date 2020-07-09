@@ -68,7 +68,7 @@ The following static ip configuration will be set up by the unattended install.
 
 These are easely found in the Autounattended.xml, feel free to adjust them.
 
-The unattended isntall will configure winrm so the system can be managed by ansible.\
+The unattended install will configure winrm so the system can be managed by ansible.\
 See details here [Ansible Docs](https://docs.ansible.com/ansible/latest/user_guide/windows_setup.html#winrm-setup)\
 The unattended install uses the following 2 commands:\
 **Do not issue these commands**, the unattended install will do it for you
@@ -176,11 +176,8 @@ The settings to toggle between these profiles can be found in the autounattend f
 Changing the digit 2 to 1 will result in a core installation.
 
 Core is the smallest version and contains a minimal set of tools and no GUI.\
-
 Desktop experience is the desktop GUI that everybody is used to.\
-
 The autounattend file configures the Desktop Experience.\
-
 Core requires far less resources, it's faster and more secure due to the much smaller tool set.
 
 All my configurations are done making use of ansible modules or powershell commands.\
