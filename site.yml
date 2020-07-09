@@ -55,7 +55,7 @@
       skip_overlap_check: true
 
   # the next task should do nothing since it is already taken care of by the ipaserver role
-  # but this is vital because ms-ad does not use dns-sec by module_default
+  # but this is vital because ms-ad does not use dns-sec by default
   # and you can't configure a trust if dns doesn't work
   # so just in case you didn't use my config for setting up the ipaserver
   - name: ensure dnsseq validation is off
