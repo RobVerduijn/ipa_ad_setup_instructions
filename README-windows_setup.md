@@ -158,9 +158,10 @@ Each version allowed the installation of two profiles
 * Core
 * Desktop Experience
 
-** You can see all these options if you boot from the media without an autounattend.iso attached.\
-If in doubt start the installation without the autounattend iso and klick through it,\
-the options will become visible before the actual installation starts.
+**The license Key determines if you get Standard or Datacenter.\
+**You can see all these options if you boot from the media without an autounattend.iso attached.\
+  If in doubt start the installation without the autounattend iso and klick through it,\
+  the options will become visible before the actual installation starts.
 
 The settings to toggle between these profiles can be found in the autounattend file between these tags
 
