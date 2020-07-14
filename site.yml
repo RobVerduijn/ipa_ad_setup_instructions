@@ -89,13 +89,24 @@
   - name: call windows_domain_configuration
     include_role:
       name: windows_domain_configuration
-
+  
+  # This one is not needed
+  # https://docs.microsoft.com/en-us/openspecs/windows_protocols/ms-adts/c1987d42-1847-4cc9-acf7-aab2136d6952
   #- name: add SRV record _kerberos._udp.{{ ad_domain }} to ad dns
   #  win_shell: >-
   #    if ( -not ( Resolve-DnsName -Name _kerberos._udp.dc._msdcs.{{ ad_domain }} -Type SRV )) {
   #    Add-DnsServerResourceRecord -Srv -Name "_kerberos._udp.dc" -ZoneName "_msdcs.{{ ad_domain }}"
   #    -DomainName "{{ inventory_hostname }}" -Priority 0 -Weight 100 -Port 88
   #    }
+
+  # This one is optional, tickets issued by AD DCs contain MS-PAC record which makes them 
+  # to big for udp packets which causes kerberos to switch to tcp almost immediatly
+  - name: add SRV record _kerberos._udp.{{ ad_domain }} to ad dns
+    win_shell: >-
+      if ( -not ( Resolve-DnsName -Name _kerberos._udp.{{ ad_domain }} -Type SRV )) {
+      Add-DnsServerResourceRecord -Srv -Name "_kerberos._udp"  -ZoneName "{{ ad_domain }}"
+      -DomainName "{{ inventory_hostname }}" -Priority 0 -Weight 100 -Port 88
+      }
 
   - name: set masterservers var
     set_fact:
