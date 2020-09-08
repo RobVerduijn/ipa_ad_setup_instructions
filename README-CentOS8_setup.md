@@ -64,7 +64,7 @@ sudo virsh define --file /path/to/kvm_centos8.xml
 This will result in a guest vm with 2 SATA cdroms attached.\
 
 The first has the CentOS-8.2.2004-x86_64-dvd1.iso iso as source.\
-The second has the centos-ksiso as source.
+The second has the centos-ks.iso as source.
 
 Start guest vm
 --------------
