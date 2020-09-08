@@ -44,7 +44,7 @@ This kickstart configures centos8 with the following
 KVM sda image
 --------------
 
-Create a sparse qcow2 image file on the command line for use by the windows guest.
+Create a sparse qcow2 image file on the command line for use by the linux guest.
 
 As root issue the next command.
 
