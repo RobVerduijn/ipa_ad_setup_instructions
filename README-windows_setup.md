@@ -130,7 +130,7 @@ This will result in a guest vm with 3 SATA cdroms attached.\
 
 The first has no source iso configured.\
 The second has the virtio-win.iso as source.\
-The third has the autounattend.iso as source.\
+The third has the autounattend.iso as source.
 
 You will need to connect the first cdrom to your windows 2019 server installation media.
 
